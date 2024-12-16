@@ -9,10 +9,10 @@ package kasir_warteg;
  *
  * @author Ahmad Fachri Albar
  */
-public class menu_transaksi extends javax.swing.JFrame {
+public class menu_inventory extends javax.swing.JFrame {
 
     /** Creates new form menu_makanan */
-    public menu_transaksi() {
+    public menu_inventory() {
         initComponents();
     }
 
@@ -66,13 +66,13 @@ public class menu_transaksi extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("MENU TRANSAKSI");
+        jLabel1.setText("MENU INVENTORY");
 
-        jLabel2.setText("ID Transaksi");
+        jLabel2.setText("ID Barang");
 
         text_id_transaksi.setEnabled(false);
 
-        jLabel3.setText("Nama Pelanggan");
+        jLabel3.setText("Nama Barang");
 
         jLabel5.setText("ID Makanan");
 
@@ -314,14 +314,18 @@ public class menu_transaksi extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(menu_transaksi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(menu_inventory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(menu_transaksi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(menu_inventory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(menu_transaksi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(menu_inventory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(menu_transaksi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(menu_inventory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -330,7 +334,7 @@ public class menu_transaksi extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new menu_transaksi().setVisible(true);
+                new menu_inventory().setVisible(true);
             }
         });
     }
