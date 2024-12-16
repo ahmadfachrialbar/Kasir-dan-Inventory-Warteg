@@ -17,6 +17,7 @@ public class Kasir_Warteg {
         // TODO code application logic here
         koneksi k = new koneksi();
         k.connect();
+        System.out.println("sijuihu");
     }
     
 }
