@@ -4,17 +4,41 @@
  */
 package kasir_warteg;
 
+import com.mysql.cj.xdevapi.Result;
+import java.sql.*;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Ahmad Fachri Albar
  */
 public class Login extends javax.swing.JFrame {
 
+    private PreparedStatement stat;
+    private ResultSet rs;
+    koneksi k = new koneksi();
+
     /**
      * Creates new form Login
      */
     public Login() {
         initComponents();
+        k.connect();
+
+    }
+
+    class user {
+
+        int id_user, id_level;
+        String username, password, nama_user;
+
+        public user() {
+            this.id_user = 0;
+            this.username = text_username.getText();
+            this.password = text_password.getText();
+            this.nama_user = "";
+            this.id_level = 0;
+        }
     }
 
     /**
@@ -32,12 +56,13 @@ public class Login extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         text_password = new javax.swing.JTextField();
         btn_login = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 102, 204));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel1.setText("LOGIN");
 
         jLabel2.setText("USERNAME");
@@ -47,6 +72,11 @@ public class Login extends javax.swing.JFrame {
         btn_login.setBackground(new java.awt.Color(204, 0, 0));
         btn_login.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         btn_login.setText("LOGIN");
+        btn_login.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_loginActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -55,6 +85,7 @@ public class Login extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator1)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -72,7 +103,9 @@ public class Login extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
@@ -89,6 +122,47 @@ public class Login extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btn_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_loginActionPerformed
+        // TODO add your handling code here:
+        user u = new user();
+        try {
+            this.stat = k.getCon().prepareStatement("select * from user where "
+                    + "username='"+u.username+"' and password='"+u.password+"';");
+            this.rs = this.stat.executeQuery();
+            while (rs.next()) {
+                u.id_level = rs.getInt("id_level");
+            }
+            if (u.id_level == 0) {
+                JOptionPane.showMessageDialog(null, "AKUN TIDAK DITEMUKAN");
+            } else {
+                switch (u.id_level) {
+                    case 1:
+                        menu_registrasi reg = new menu_registrasi();
+                        reg.setVisible(true);
+                        this.setVisible(false);
+                        break;
+                    case 2:
+                        menu_transaksi tran = new menu_transaksi();
+                        tran.setVisible(true);
+                        this.setVisible(false);
+                        break;
+                    case 3:
+                        menu_makanan makan = new menu_makanan();
+                        makan.setVisible(true);
+                        this.setVisible(false);
+                        makan.btn_logout.setEnabled(true);
+                        break;
+                }
+            }
+            if (u.username.isEmpty() || u.password.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Username atau Password tidak boleh kosong!");
+                return;
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }//GEN-LAST:event_btn_loginActionPerformed
 
     /**
      * @param args the command line arguments
@@ -130,6 +204,7 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField text_password;
     private javax.swing.JTextField text_username;
     // End of variables declaration//GEN-END:variables
