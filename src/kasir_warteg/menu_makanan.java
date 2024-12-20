@@ -381,11 +381,11 @@ public class menu_makanan extends javax.swing.JFrame {
     private void btn_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deleteActionPerformed
         // TODO add your handling code here
         try {
+            makanan m = new makanan();
             this.stat = k.getCon().prepareStatement("delete from makanan where id_makanan=?");
             stat.setInt(1, Integer.parseInt(text_id_makanan.getText()));//mengambil dr tetxfiield lalu di convert ke int dulu,lalu masukan ke dalma sql
             stat.executeUpdate();//menhapus dr tabel gui hingga localhost
             refreshTable();
-
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());//untuk mengetahui ada eror atau tidak
 

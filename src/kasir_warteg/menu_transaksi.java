@@ -494,6 +494,7 @@ public class menu_transaksi extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Data tidak ada.");
             }
             refreshTable();
+            
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
