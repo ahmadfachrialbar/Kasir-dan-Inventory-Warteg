@@ -489,7 +489,7 @@ public class menu_transaksi extends javax.swing.JFrame {
             this.stat.setInt(1, tran.id_transaksi);
             int rowsAffected = stat.executeUpdate(); ///untuk menghappus data dari gui ke sql
             if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(null, "Transaksi berhasil dihapus.");
+                JOptionPane.showMessageDialog(null, "Transaksi berhasil di hapus.");
             } else {
                 JOptionPane.showMessageDialog(null, "Data tidak ada.");
             }
