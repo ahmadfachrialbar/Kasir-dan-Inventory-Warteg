@@ -283,6 +283,9 @@ public class menu_inventory extends javax.swing.JFrame {
 
     private void btn_logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_logoutActionPerformed
         // TODO add your handling code here:
+        Login login = new Login();
+        login.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_btn_logoutActionPerformed
 
     private void combo_id_makananActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_id_makananActionPerformed

@@ -148,10 +148,10 @@ public class Login extends javax.swing.JFrame {
                         this.setVisible(false);
                         break;
                     case 3:
-                        menu_makanan makan = new menu_makanan();
-                        makan.setVisible(true);
+                        menu_inventory inven = new menu_inventory();
+                        inven.setVisible(true);
                         this.setVisible(false);
-                        makan.btn_logout.setEnabled(true);
+                        inven.btn_logout.setEnabled(true);
                         break;
                 }
             }
