@@ -394,7 +394,7 @@ public class menu_makanan extends javax.swing.JFrame {
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(null, "Data berhasil dihapus.");
             } else {
-                JOptionPane.showMessageDialog(null, "Data tidak ada.");
+                JOptionPane.showMessageDialog(null, "Data tidak ada");
             }
             refreshTable();
         } catch (Exception e) {
