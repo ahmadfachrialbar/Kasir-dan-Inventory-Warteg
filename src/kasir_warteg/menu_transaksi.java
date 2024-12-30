@@ -4,15 +4,16 @@
  */
 package kasir_warteg;
 
-import java.io.File;
-import javax.swing.table.DefaultTableModel;
-import java.sql.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import javax.swing.JOptionPane;
-import java.util.Date;
+import java.io.File; //libraries untuk mengelola file, membaca, mengakses laporan
+import javax.swing.table.DefaultTableModel; //untuk model tabel
+import java.sql.*; 
+import java.text.DateFormat; //untuk format tanggal
+import java.text.SimpleDateFormat; 
+import javax.swing.JOptionPane; 
+import java.util.Date; //untuk keperluan tanggal
 
-import net.sf.jasperreports.engine.JRException;
+//libraries untuk keperluan laporan
+import net.sf.jasperreports.engine.JRException; 
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JasperViewer;
@@ -23,48 +24,51 @@ import net.sf.jasperreports.view.JasperViewer;
  * @author Ahmad Fachri Albar
  */
 //tahap pertama
+//membuat kelas utama menu_transaksi 
 public class menu_transaksi extends javax.swing.JFrame {
 
     //membuat variable default tablemodel, preparedStatemnet result set dan class koneksi
-    private DefaultTableModel model = null;
-    private PreparedStatement stat;
-    private ResultSet rs;
+    private DefaultTableModel model = null; //untuk model tabel
+    private PreparedStatement stat; //untuk menjalankan query
+    private ResultSet rs; //untuk menyimpan hasil query
     koneksi k = new koneksi(); //untuk mengkoneksikan dengan database loclahost
 
     /**
      * Creates new form menu_makanan
      */
-    public menu_transaksi() {
-        initComponents();
+    public menu_transaksi() { //konstruktor
+        initComponents(); //inisialisasi komponen GUI
 
         //tahap ke 8 menambahkan koneksi dan konstruktor
-        k.connect();
-        refreshTable();
-        refreshcombo();
+        k.connect(); //koneksi ke database
+        refreshTable(); //memperbarui isi tabel dari database
+        refreshcombo(); //memperbatui daftar makanan yang tersedia
     }
-    //tahap kedua
+    //INHERINTACE / PEWARISAN 
     //membuat kelas transaksi
-    class transaksi extends menu_transaksi {
+    class transaksi extends menu_transaksi { //enherintace kelas transaksi mewarisi kelas menu transaksi
 
+        //enkapsulasi : atribut dideklarasikan dengan private
         int id_transaksi, id_makanan, harga, jumlah_beli, total_bayar;
         String nama_pelanggan, tanggal, nama_makanan;
 
+        //konstruktor kelas transaksi
         public transaksi() {
-            this.nama_pelanggan = text_nama_pelanggan.getText();
-            String combo = combo_id_makanan.getSelectedItem().toString();
+            this.nama_pelanggan = text_nama_pelanggan.getText(); //mengambil nama pelanggan dari input
+            String combo = combo_id_makanan.getSelectedItem().toString(); //mengambil data dari combo box
             String[] arr = combo.split(" : "); //untuk menggabungkan beberapa nilai dalam satu textfield
 
-            this.id_makanan = Integer.parseInt(arr[0]);
+            this.id_makanan = Integer.parseInt(arr[0]); //mendapatkan id makanan
             try {
-                Date date = text_tanggal.getDate();
-                DateFormat dateformat = new SimpleDateFormat("YYYY-MM-dd");//yang diterima oleh sql tahun bulan tgl
-                this.tanggal = dateformat.format(date);
+                Date date = text_tanggal.getDate(); //mengamnil tanggal dari input
+                DateFormat dateformat = new SimpleDateFormat("YYYY-MM-dd");//dormat yang diterima oleh sql tahun bulan tgl
+                this.tanggal = dateformat.format(date); //konversi tanggal ke format string
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, e.getMessage());
+                JOptionPane.showMessageDialog(null, e.getMessage()); //pesan jika ada eror
             }
 
-            this.nama_makanan = arr[1];
-            this.harga = Integer.parseInt(arr[2]); //konversi ke string
+            this.nama_makanan = arr[1]; //mengambil nama makanan
+            this.harga = Integer.parseInt(arr[2]); //konversi ke string lalu mengambil harga makanan
             
             // Validasi input jumlah beli
             String jumlahBeliText = text_jml_beli.getText();
@@ -75,7 +79,7 @@ public class menu_transaksi extends javax.swing.JFrame {
                 return; // Keluar dari konstruktor jika input tidak valid
             }
             
-            this.total_bayar = this.harga * this.jumlah_beli;
+            this.total_bayar = this.harga * this.jumlah_beli; //menghitung total bayar
 
         }
     }
@@ -84,7 +88,8 @@ public class menu_transaksi extends javax.swing.JFrame {
     //membuat refreshTable
     public void refreshTable() {
 
-        model = new DefaultTableModel();
+        model = new DefaultTableModel(); //membuat model baru
+        //menambahkan kolom ke tabel GUI
         model.addColumn("ID Transaksi");
         model.addColumn("Nama Pelanggan");
         model.addColumn("ID Makanan");
@@ -93,13 +98,13 @@ public class menu_transaksi extends javax.swing.JFrame {
         model.addColumn("Harga");
         model.addColumn("Jumlah beli");
         model.addColumn("Total Bayar");
-        table_transaksi.setModel(model);
+        table_transaksi.setModel(model);//mengatur model ke tabel transaksi
 
         //untuk mengambil data tabel di local host menggunakan syntax sql
         try {
-            this.stat = k.getCon().prepareStatement("select *from transaksi");
+            this.stat = k.getCon().prepareStatement("select *from transaksi"); //untuk mengambil semua data pada tabel
             this.rs = this.stat.executeQuery();//pake query karena mo ngambil dr database
-            while (rs.next()) {
+            while (rs.next()) { //mengambil setiap baris dari hasil query
                 Object[] data = {
                     rs.getString(1),
                     rs.getString(2),
@@ -111,10 +116,10 @@ public class menu_transaksi extends javax.swing.JFrame {
                     rs.getString(8)
 
                 };
-                model.addRow(data);
+                model.addRow(data); //menambahkan data ke tabel
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage()); //pesan jika ada eror
 
         }
         //untuk membersihkan textfield setelah mengisi
@@ -130,15 +135,18 @@ public class menu_transaksi extends javax.swing.JFrame {
     public void refreshcombo() {
         try {
             this.stat = k.getCon().prepareStatement("select *from makanan "
-                    + "where status='TERSEDIA'");
-            this.rs = this.stat.executeQuery();
-            while (rs.next()) {
+                    + "where status='TERSEDIA'"); //query untuk menambil semua dta dari tabel yang statusnya tersedia kemudian di koneksikan ke database
+            this.rs = this.stat.executeQuery(); // Menjalankan pernyataan SQL dan menyimpan hasilnya dalam objek `ResultSet` (`rs`).
+            while (rs.next()) { //perulangan 
                 combo_id_makanan.addItem(rs.getString("id_makanan") + " : "
                         + rs.getString("nama_makanan") + " : " + rs.getString("harga") + " : ");
+                // Menambahkan item ke dalam combo box `combo_id_makanan`. 
+                // Setiap item diisi dengan ID makanan, nama makanan, dan harga makanan yang dipisahkan oleh ":". 
+                
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage()); //pesan jika ada eror
         }
 
     }
@@ -420,11 +428,11 @@ public class menu_transaksi extends javax.swing.JFrame {
     private void btn_inputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_inputActionPerformed
         // TODO add your handling code here:
         try {
-            transaksi tran = new transaksi();
-            text_total.setText("" + tran.total_bayar);
+            transaksi tran = new transaksi(); //membuat objek baru bernama tran
+            text_total.setText("" + tran.total_bayar); //menampilkan total bayar ke textfield berdasarkan p[perhitugan tadi
             //input
-            this.stat = k.getCon().prepareStatement("insert into transaksi values(?,?,?,?,?,?,?,?)");
-            this.stat.setInt(1, 0);
+            this.stat = k.getCon().prepareStatement("insert into transaksi values(?,?,?,?,?,?,?,?)"); //query untuk memasukkan data transaksi ke tabel
+            this.stat.setInt(1, 0); //auto increment
             this.stat.setString(2, tran.nama_pelanggan);
             this.stat.setInt(3, tran.id_makanan);
             this.stat.setString(4, tran.tanggal);
@@ -433,15 +441,15 @@ public class menu_transaksi extends javax.swing.JFrame {
             this.stat.setInt(7, tran.jumlah_beli);
             this.stat.setInt(8, tran.total_bayar);
             int rowsAffected = stat.executeUpdate(); ///untuk memasukan data dari gui ke sql
-            if (rowsAffected > 0) {
+            if (rowsAffected > 0) { //jika data berhasil dimasukan dan tidak
                 JOptionPane.showMessageDialog(null, "Transaksi berhasil ditambahkan.");
             } else {
                 JOptionPane.showMessageDialog(null, "Data tidak ada.");
             }
-            refreshTable();
+            refreshTable(); //memperbarui tampilan tabel
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage()); //pesan jika eror
         }
     }//GEN-LAST:event_btn_inputActionPerformed
 
@@ -449,11 +457,11 @@ public class menu_transaksi extends javax.swing.JFrame {
     private void btn_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_updateActionPerformed
         // TODO add your handling code here:
         try {
-            transaksi tran = new transaksi();
-            tran.id_transaksi = Integer.parseInt(text_id_transaksi.getText());
+            transaksi tran = new transaksi(); //objek baru bernama tran
+            tran.id_transaksi = Integer.parseInt(text_id_transaksi.getText()); //mengambil id transaksi dari textfield
             this.stat = k.getCon().prepareStatement("update transaksi set nama_pelanggan =?,"
-                    + "id_makanan=?, tanggal=?, nama_makanan=?,harga=?,jumlah_beli=?,total_bayar=? "
-                    + "where id_transaksi=?");
+                    + "id_makanan=?, tanggal=?, nama_makanan=?,harga=?,jumlah_beli=?,total_bayar=? " 
+                    + "where id_transaksi=?"); //query untuk update data
             this.stat.setString(1, tran.nama_pelanggan);
             this.stat.setInt(2, tran.id_makanan);
             this.stat.setString(3, tran.tanggal);
@@ -463,15 +471,15 @@ public class menu_transaksi extends javax.swing.JFrame {
             this.stat.setInt(7, tran.total_bayar);
             this.stat.setInt(8, tran.id_transaksi);
             int rowsAffected = stat.executeUpdate(); ///untuk memasukan data dari gui ke sql pake update karena memasukan gui ke database
-            if (rowsAffected > 0) {
+            if (rowsAffected > 0) {//jika berhasil atau tidak
                 JOptionPane.showMessageDialog(null, "Transaksi berhasil diubah.");
             } else {
                 JOptionPane.showMessageDialog(null, "Data tidak ada.");
             }
-            refreshTable();
+            refreshTable();//memperbarui tampilan tabel
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage()); //pesan jika ada eror
         }
     }//GEN-LAST:event_btn_updateActionPerformed
 
@@ -479,17 +487,17 @@ public class menu_transaksi extends javax.swing.JFrame {
     private void btn_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deleteActionPerformed
         // TODO add your handling code here:
         try {
-            transaksi tran = new transaksi();
-            tran.id_transaksi = Integer.parseInt(text_id_transaksi.getText());
-            this.stat = k.getCon().prepareStatement("delete from transaksi where id_transaksi=?");
-            this.stat.setInt(1, tran.id_transaksi);
-            int rowsAffected = stat.executeUpdate(); ///untuk menghappus data dari gui ke sql
+            transaksi tran = new transaksi(); //membuat objek bernama tran
+            tran.id_transaksi = Integer.parseInt(text_id_transaksi.getText()); //mengambil id transaksi dari textfield
+            this.stat = k.getCon().prepareStatement("delete from transaksi where id_transaksi=?"); //query untuk delete
+            this.stat.setInt(1, tran.id_transaksi); 
+            int rowsAffected = stat.executeUpdate(); //jalankan lalu happus data dari gui ke sql
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(null, "Transaksi berhasil di hapus.");
             } else {
                 JOptionPane.showMessageDialog(null, "Data tidak ada.");
             }
-            refreshTable();
+            refreshTable(); //memperbarui tampilan tabel
             
 
         } catch (Exception e) {
@@ -501,11 +509,11 @@ public class menu_transaksi extends javax.swing.JFrame {
     private void btn_cetak_laporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cetak_laporanActionPerformed
         // TODO add your handling code here:
         try {
-            File namafile = new File("src/laporan/laporan_transaksi.jasper");
-            JasperPrint jasper = JasperFillManager.fillReport(namafile.getPath(), null, k.getCon());
-            JasperViewer.viewReport(jasper,false);
+            File namafile = new File("src/laporan/laporan_transaksi.jasper"); //menunjuk file laporan transaksi yang telah dibuat
+            JasperPrint jasper = JasperFillManager.fillReport(namafile.getPath(), null, k.getCon()); //mengisi laporan dengan data dari database menggunakan koneksi
+            JasperViewer.viewReport(jasper,false); //menampilkan laporan menggunakan jasperviewer
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage()); //pesan jika ada eror
         }
             
         
@@ -514,8 +522,8 @@ public class menu_transaksi extends javax.swing.JFrame {
     private void btn_logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_logoutActionPerformed
         // TODO add your handling code here:
         Login login = new Login();
-        login.setVisible(true);
-        this.setVisible(false);
+        login.setVisible(true); //membuka menu login
+        this.setVisible(false); //menutup menu transaksi
     }//GEN-LAST:event_btn_logoutActionPerformed
 
     private void combo_id_makananActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_id_makananActionPerformed
@@ -525,14 +533,17 @@ public class menu_transaksi extends javax.swing.JFrame {
     private void btn_menu_makananActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_menu_makananActionPerformed
         // TODO add your handling code here:
         menu_makanan makanan = new menu_makanan();
-        makanan.setVisible(true);
-        this.setVisible(false);
+        makanan.setVisible(true); //membuka menu makanan
+        this.setVisible(false); //menutup menu transaksi 
 
         //button di enable kan
         makanan.btn_delete.setEnabled(true);
         makanan.btn_input.setEnabled(true);
         makanan.btn_update.setEnabled(true);
         makanan.btn_transaksi.setEnabled(true);
+        makanan.btn_logout.setEnabled(true);
+        
+        
     }//GEN-LAST:event_btn_menu_makananActionPerformed
 
     private void text_totalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_text_totalActionPerformed
@@ -542,6 +553,7 @@ public class menu_transaksi extends javax.swing.JFrame {
     //tahap keenam 
     private void table_transaksiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_transaksiMouseClicked
         // TODO add your handling code here:
+        //mengatur text pada field berdasarkan baris yang di klik
         text_id_transaksi.setText(model.getValueAt(table_transaksi.getSelectedRow(), 0).toString());
         text_nama_pelanggan.setText(model.getValueAt(table_transaksi.getSelectedRow(), 1).toString());
         text_jml_beli.setText(model.getValueAt(table_transaksi.getSelectedRow(), 6).toString());

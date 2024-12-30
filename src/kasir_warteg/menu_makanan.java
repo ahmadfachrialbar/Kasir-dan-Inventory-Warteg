@@ -14,9 +14,9 @@ import javax.swing.JOptionPane;
  * @author Ahmad Fachri Albar
  */
 //tahap pertama
-public class menu_makanan extends javax.swing.JFrame {
+public class menu_makanan extends javax.swing.JFrame { //deklarasi kelas menu_makanan debagai turunan dari Jframe
 
-    //membuat variabel
+    //membuat variabel untuk model tabel, perintah sql dan koneksi database
     private DefaultTableModel model = null;
     private PreparedStatement stat;
     private ResultSet rs;
@@ -25,20 +25,22 @@ public class menu_makanan extends javax.swing.JFrame {
     /**
      * Creates new form menu_makanan
      */
-    public menu_makanan() {
-        initComponents();
+    public menu_makanan() { //konstruktor untuk menu makanan
+        initComponents(); //inisialisasi komponen GUI
         //tahap ke 8 menambahkan refreshTabe dan koneksi constructor\
-        k.connect();
-        refreshTable();
+        k.connect(); //menghubungkan ke database
+        refreshTable(); //
     }
 
-    //membuat class
+    //membuat class makanan
     class makanan extends menu_makanan {
 
-        int id_makanan, harga;
+        //deklarasi atribut dari class makanan
+        int id_makanan, harga; 
         String nama_makanan, status;
 
         public makanan() {
+            //mengambil nilai dari inputan di GUI
             this.nama_makanan = text_nama_makanan.getText();
             this.harga = Integer.parseInt(text_harga_makanan.getText());
             this.status = combo_status_makanan.getSelectedItem().toString();
@@ -46,35 +48,39 @@ public class menu_makanan extends javax.swing.JFrame {
         }
     }
 
-    //membuat refresh Table
+    
     //tahap ketiga
-    public void refreshTable() {
+    public void refreshTable() { //metod untuk memperbarui data pada tabel GUI
         model = new DefaultTableModel();
+        //menambahkan kolom kolom untuk ditampilkan di GUI
         model.addColumn("ID_makanan");
         model.addColumn("Nama Makanan");
         model.addColumn("Harga");
         model.addColumn("Status Makanan");
-        table_makanan.setModel(model);
+        table_makanan.setModel(model); //menghubungkan mmodel dengan tabel di GUI
         try { //memanggil syntax sql
-            this.stat = k.getCon().prepareStatement("select *from makanan");
-            this.rs = this.stat.executeQuery();//memasukan data dr table localhost ke gui,kalo sebaliknya pake update
+            this.stat = k.getCon().prepareStatement("select *from makanan"); //query untuk mengambil semua data makanan
+            this.rs = this.stat.executeQuery();//menjalankan query lalu memasukan data dr table localhost ke gui,kalo sebaliknya pake update
 
             // Mengosongkan model sebelum menambahkan data baru
             model.setRowCount(0); // Menghapus semua baris yang ada
 
-            while (rs.next()) {
+            while (rs.next()) {//perulangan data dari hasil query
                 Object[] data = {
                     rs.getInt("id_makanan"),
                     rs.getString("nama_makanan"),
                     rs.getInt("harga"),
                     rs.getString("status")
                 };
-                model.addRow(data);
-                //ketika ada data,diambil, dijadikan array dalam baris, kemudian dimasukan ke dalam model default tabel
+                model.addRow(data); //menambahkan data ke model tabel
+                //ketika ada data,diambil, dijadikan array dalam baris, 
+                //kemudian dimasukan ke dalam model default tabel
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage()); //untuk mengetahui ada eror atau tidak
         }
+        
+        //mengosongkan input text field di GUI
         text_id_makanan.setText("");
         text_nama_makanan.setText("");
         text_harga_makanan.setText("");
@@ -333,20 +339,20 @@ public class menu_makanan extends javax.swing.JFrame {
         try {
             makanan m = new makanan();//memanggil class
             //mengambil data dr gui ke dalam tabel sql pake syntax sql
-            this.stat = k.getCon().prepareStatement("insert into makanan values (?,?,?,?)");
-            stat.setInt(1, 0);
+            this.stat = k.getCon().prepareStatement("insert into makanan values (?,?,?,?)"); //query untuk menambahkan data
+            stat.setInt(1, 0); //ID auto increment
             stat.setString(2, m.nama_makanan);
             stat.setInt(3, Integer.parseInt(text_harga_makanan.getText())); // Konversi harga
             stat.setString(4, m.status);
             
-            int rowsAffected = stat.executeUpdate(); ////memasukan nilai dr gui ke tabel localhost
+            int rowsAffected = stat.executeUpdate(); //menjalankan lalu memasukan nilai dr gui ke tabel localhost
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(null, "Data berhasil dimasukan.");
             } else {
                 JOptionPane.showMessageDialog(null, "Data tidak ada.");
             }
 
-            refreshTable();
+            refreshTable(); //memperbarui tabel
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());//untuk mengetahui ada eror atau tidak
         }
@@ -356,13 +362,13 @@ public class menu_makanan extends javax.swing.JFrame {
     private void btn_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_updateActionPerformed
         // TODO add your handling code here:
         try {
-            if (text_id_makanan.getText().isEmpty()) {
+            if (text_id_makanan.getText().isEmpty()) { //validasi jika id kosong
                 JOptionPane.showMessageDialog(null, "ID Makanan tidak boleh kosong.");
                 return; // Keluar dari metode jika ID kosong
             }
 
-            makanan m = new makanan(); // Membuat instance dari kelas makanan
-            this.stat = k.getCon().prepareStatement("update makanan set nama_makanan =?, harga=?, status=? where id_makanan=?");
+            makanan m = new makanan(); //memanggil kelas makanan
+            this.stat = k.getCon().prepareStatement("update makanan set nama_makanan =?, harga=?, status=? where id_makanan=?"); //query untuk update data
             stat.setString(1, m.nama_makanan); // Mengatur nama makanan
             stat.setInt(2, m.harga); // Mengatur harga makanan
             stat.setString(3, m.status); // Mengatur status makanan
@@ -374,8 +380,8 @@ public class menu_makanan extends javax.swing.JFrame {
             } else {
                 JOptionPane.showMessageDialog(null, "Data tidak ada.");
             }
-            refreshTable(); // Menyegarkan tabel untuk menampilkan data yang diperbarui
-        } catch (SQLException e) {
+            refreshTable(); // Memperbarui tabel
+        } catch (SQLException e) { //pesan jika ada kesalahan
             JOptionPane.showMessageDialog(null, "SQL Error: " + e.getMessage());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
@@ -387,16 +393,16 @@ public class menu_makanan extends javax.swing.JFrame {
     private void btn_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deleteActionPerformed
         // TODO add your handling code here
         try {
-            makanan m = new makanan();
-            this.stat = k.getCon().prepareStatement("delete from makanan where id_makanan=?");
+            makanan m = new makanan(); //memanggil kelas makanan
+            this.stat = k.getCon().prepareStatement("delete from makanan where id_makanan=?"); //query untuk delete data
             stat.setInt(1, Integer.parseInt(text_id_makanan.getText()));//mengambil dr tetxfiield lalu di convert ke int dulu,lalu masukan ke dalma sql
             int rowsAffected = stat.executeUpdate(); // Menjalankan perintah update
-            if (rowsAffected > 0) {
+            if (rowsAffected > 0) { //pesan jika berhasil dan tidak
                 JOptionPane.showMessageDialog(null, "Data berhasil dihapus.");
             } else {
                 JOptionPane.showMessageDialog(null, "Data tidak ada");
             }
-            refreshTable();
+            refreshTable();//memperbarui tabel
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());//untuk mengetahui ada eror atau tidak
 
@@ -406,29 +412,29 @@ public class menu_makanan extends javax.swing.JFrame {
     private void btn_registrasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_registrasiActionPerformed
         // TODO add your handling code here:
         //agar bisa ke konek
-        menu_registrasi reg = new menu_registrasi();
-        reg.setVisible(true);
-        this.setVisible(false);
+        menu_registrasi reg = new menu_registrasi(); //memanggil registrasi
+        reg.setVisible(true); //membuka menu registrasi
+        this.setVisible(false); //menutup menu makanan
     }//GEN-LAST:event_btn_registrasiActionPerformed
 
     private void btn_logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_logoutActionPerformed
         // TODO add your handling code here:
-        Login login = new Login();
-        login.setVisible(true);
-        this.setVisible(false);
+        Login login = new Login(); //memanggil login
+        login.setVisible(true); //membuka menu login
+        this.setVisible(false); //menutup menu makanan
 
     }//GEN-LAST:event_btn_logoutActionPerformed
 
     private void btn_transaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_transaksiActionPerformed
         // TODO add your handling code here:
         menu_transaksi transaksi = new menu_transaksi();
-        transaksi.setVisible(true);
-        this.setVisible(false);
+        transaksi.setVisible(true); //membuka menu transaksi
+        this.setVisible(false); //menutup menu makanan
     }//GEN-LAST:event_btn_transaksiActionPerformed
 
 //    tahap kelima membuat table
     private void table_makananMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_makananMouseClicked
-        // TODO add your handling code here:
+        //mengambil data dari baris yang di klik dan mengisi textfield di GUI
         //agar ketika di klik muncul dalam textfield
         text_id_makanan.setText(model.getValueAt(table_makanan.getSelectedRow(), 0).toString());
         text_nama_makanan.setText(model.getValueAt(table_makanan.getSelectedRow(), 1).toString());

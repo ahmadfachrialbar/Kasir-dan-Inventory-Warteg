@@ -13,27 +13,29 @@ import javax.swing.JOptionPane;
  *
  * @author Ahmad Fachri Albar
  */
-public class menu_registrasi extends javax.swing.JFrame {
+public class menu_registrasi extends javax.swing.JFrame { // Deklarasi kelas menu_registrasi yang merupakan subclass dari javax.swing.JFrame
 
-    //membuat variable
+    // Deklarasi variabel model untuk tabel, stat untuk statement SQL, rs untuk hasil query, dan koneksi database
     private DefaultTableModel model = null;
     private PreparedStatement stat;
     private ResultSet rs;
-    koneksi k = new koneksi();
+    koneksi k = new koneksi(); //membuat objek baru koneksi untuk menghubungkan ke database
 
     /**
      * Creates new form menu_makanan
      */
-    public menu_registrasi() {
-        initComponents();
+    public menu_registrasi() { //konstruktor menu registrasi 
+        initComponents(); //inisialisasi komponen GUI
 
         //menambahkan Refresh table dan koneksi di constructor GUI
         k.connect();//supaya GUI connect dengan sql yang ada di localhost
         refreshTable();
+        //listener pada tabel untuk menangani event klik mouse
         table_registrasi.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 int row = table_registrasi.getSelectedRow();
                 if (row != -1) {
+                    // Mengisi field berdasarkan data yang ada di baris tabel yang dipilih
                     text_id_user.setText(table_registrasi.getValueAt(row, 0).toString());
                     text_username.setText(table_registrasi.getValueAt(row, 1).toString());
                     text_password.setText(table_registrasi.getValueAt(row, 2).toString());
@@ -44,13 +46,16 @@ public class menu_registrasi extends javax.swing.JFrame {
         });
     }
 
+    // INHERITANCE
     //membuat class user
+    // Deklarasi kelas user sebagai subclass dari menu_registrasi 
     class user extends menu_registrasi {
 
+        //atribut dari class user
         int id_user, id_level;
         String username, password, nama_user;
 
-        //mengisi constractor
+        // Constructor untuk inisialisasi atribut berdasarkan input dari GUI
         public user() {
             username = text_username.getText();
             password = text_password.getText();
@@ -61,18 +66,19 @@ public class menu_registrasi extends javax.swing.JFrame {
 
 //    membuat class refresh table( untuk membuat komponen kolom dan baris di Jtable yang ada pada GUI
     public void refreshTable() {
-        model = new DefaultTableModel();
+        model = new DefaultTableModel(); //membuat objek
+        //menambahan kolom ke model tabel
         model.addColumn("id_user");
         model.addColumn("username");
         model.addColumn("password");
         model.addColumn("nama_user");
         model.addColumn("id_level");
         //model masukan ke dalam komponen ttable yang ada di GUI
-        table_registrasi.setModel(model);
+        table_registrasi.setModel(model); // Menghubungkan model ke komponen tabel
         try {
             this.stat = k.getCon().prepareStatement("SELECT * FROM user");
-            this.rs = stat.executeQuery();
-            while (rs.next()) {
+            this.rs = stat.executeQuery(); //menjalankan query
+            while (rs.next()) { //perulangan data hasil query
                 Object[] data = {
                     rs.getString("id_user"),
                     rs.getString("username"),
@@ -80,12 +86,13 @@ public class menu_registrasi extends javax.swing.JFrame {
                     rs.getString("nama_user"),
                     rs.getString("id_level")
                 };
-                //masukan ke dalam model
+                //masukan ke dalam model tabel
                 model.addRow(data);
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage()); //pesan jika ada eror
         }
+        //membersihkann textfield pada GUI
         text_id_user.setText("");
         text_username.setText("");
         text_password.setText("");
@@ -334,19 +341,19 @@ public class menu_registrasi extends javax.swing.JFrame {
         try {
             //untuk input data
             user u = new user();//panggil class user
-            this.stat = k.getCon().prepareStatement("insert into user values(?,?,?,?,?)");
-            stat.setInt(1, 0);
+            this.stat = k.getCon().prepareStatement("insert into user values(?,?,?,?,?)"); //query untuk memasukan data ke tabel
+            stat.setInt(1, 0); //auto increment
             stat.setString(2, u.username);
             stat.setString(3, u.password);
             stat.setString(4, u.nama_user);
             stat.setInt(5, u.id_level);
-            int rowsAffected = stat.executeUpdate(); ///untuk memasukan data dari gui ke sql
+            int rowsAffected = stat.executeUpdate(); //menjalankan query lalu memasukan data dari gui ke sql
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(null, "Data user berhasil dimasukan.");
             } else {
                 JOptionPane.showMessageDialog(null, "Data tidak ada.");
             }
-            refreshTable();
+            refreshTable(); 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -355,7 +362,7 @@ public class menu_registrasi extends javax.swing.JFrame {
     private void btn_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_updateActionPerformed
         // TODO add your handling code here:
         try {
-            if (text_id_user.getText().isEmpty()) {
+            if (text_id_user.getText().isEmpty()) { //validasi input jika id kosong
                 JOptionPane.showMessageDialog(null, "ID pengguna tidak boleh kosong.");
                 return;
             }
@@ -376,7 +383,7 @@ public class menu_registrasi extends javax.swing.JFrame {
             refreshTable();
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage()); //pesan jika ada eror
         }
     }//GEN-LAST:event_btn_updateActionPerformed
 
@@ -385,9 +392,9 @@ public class menu_registrasi extends javax.swing.JFrame {
         try {
 
             user u = new user();
-            this.stat = k.getCon().prepareStatement("delete from user where id_user=?");
+            this.stat = k.getCon().prepareStatement("delete from user where id_user=?"); //query untuk menhapus data
             stat.setString(1, text_id_user.getText());
-            int rowsAffected = stat.executeUpdate(); ///untuk menghapus data 
+            int rowsAffected = stat.executeUpdate(); //jalankan query lalu hapus data 
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(null, "Data user berhasil dihapus.");
             } else {
@@ -395,7 +402,7 @@ public class menu_registrasi extends javax.swing.JFrame {
             }
             refreshTable();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage()); //pesan jika ada eror
         }
 
     }//GEN-LAST:event_btn_deleteActionPerformed
@@ -404,8 +411,8 @@ public class menu_registrasi extends javax.swing.JFrame {
 
         //untuk mengkoneksikan ke menu makanan, jadi kalo di klik akan pindah ke menu makanan
         menu_makanan makan = new menu_makanan();
-        makan.setVisible(true);
-        this.setVisible(false);
+        makan.setVisible(true); //membuka menu makanan
+        this.setVisible(false); //menutup menu registrasi
 
         //untuk mengenable kan menu menu ketika hak aksesnya adalah seorang admin
         makan.btn_input.setEnabled(true);
@@ -418,8 +425,8 @@ public class menu_registrasi extends javax.swing.JFrame {
 
     private void btn_logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_logoutActionPerformed
         Login login = new Login();
-        login.setVisible(true);
-        this.setVisible(false);
+        login.setVisible(true); //membuka menu login
+        this.setVisible(false); //menutup menu registrasi 
 // TODO add your handling code here:
     }//GEN-LAST:event_btn_logoutActionPerformed
 

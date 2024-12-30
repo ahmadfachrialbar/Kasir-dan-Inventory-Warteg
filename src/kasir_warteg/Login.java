@@ -12,30 +12,31 @@ import javax.swing.JOptionPane;
  *
  * @author Ahmad Fachri Albar
  */
-public class Login extends javax.swing.JFrame {
+public class Login extends javax.swing.JFrame { //// Deklarasi kelas Login yang merupakan subclass dari JFrame 
 
-    private PreparedStatement stat;
-    private ResultSet rs;
-    koneksi k = new koneksi();
+    private PreparedStatement stat; //variabel untuk keperluan quersy sql
+    private ResultSet rs; //variabel untuk menyimpan hasil query sql
+    koneksi k = new koneksi(); //koneksi untuk menghubungkan ke database
 
     /**
      * Creates new form Login
      */
-    public Login() {
-        initComponents();
-        k.connect();
+    public Login() { //konstruktor untuk kelas login
+        initComponents(); //memanggil metod untuk GUI
+        k.connect(); //memanggil metod connect untuk dihubungkan ke database
 
     }
 
-    class user {
+    class user { //class user untuk keperluan menu login
 
-        int id_user, id_level;
+        //deklarasi variabel
+        int id_user, id_level; 
         String username, password, nama_user;
 
-        public user() {
-            this.id_user = 0;
-            this.username = text_username.getText();
-            this.password = text_password.getText();
+        public user() { //konstruktor untuk menginisialisasi objek user
+            this.id_user = 0; //inisialisasi id dengan null
+            this.username = text_username.getText(); //mengambil data dari text field untuk GUI
+            this.password = text_password.getText(); //mengambil data dari text field untuk GUI
             this.nama_user = "";
             this.id_level = 0;
         }
@@ -125,42 +126,47 @@ public class Login extends javax.swing.JFrame {
 
     private void btn_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_loginActionPerformed
         // TODO add your handling code here:
-        user u = new user();
+        user u = new user(); //membuat objek user 
         try {
-            this.stat = k.getCon().prepareStatement("select * from user where "
+            this.stat = k.getCon().prepareStatement("select * from user where " //query sql untuk mencari user berdasarkan username dan password
                     + "username='"+u.username+"' and password='"+u.password+"';");
-            this.rs = this.stat.executeQuery();
-            while (rs.next()) {
-                u.id_level = rs.getInt("id_level");
+            this.rs = this.stat.executeQuery(); //menjalankan query
+            while (rs.next()) { //perulangan untuk membaca data dr hasil query
+                u.id_level = rs.getInt("id_level"); //mengambil id level akses dari hasil query
             }
-            if (u.id_level == 0) {
+            if (u.id_level == 0) { // Jika ID level tidak ditemukan, berarti akun tidak ada.
                 JOptionPane.showMessageDialog(null, "AKUN TIDAK DITEMUKAN");
-            } else {
-                switch (u.id_level) {
-                    case 1:
+            } else {// Jika ID level ditemukan, mengarahkan ke menu sesuai level akses.
+                switch (u.id_level) { 
+                    case 1: //jika id level satu maka
                         menu_registrasi reg = new menu_registrasi();
-                        reg.setVisible(true);
-                        this.setVisible(false);
+                        reg.setVisible(true); //menampilkan menu registrasi
+                        this.setVisible(false); //menutup menu login
+                        menu_makanan mkn = new menu_makanan();
+                        mkn.btn_registrasi.setEnabled(true);
                         break;
-                    case 2:
+                    case 2: //jika id level dua maka
                         menu_transaksi tran = new menu_transaksi();
-                        tran.setVisible(true);
-                        this.setVisible(false);
+                        tran.setVisible(true); //menampilkan menu transaksi
+                        this.setVisible(false); //menutup menu login
+                        menu_makanan makanan = new menu_makanan();
+                        makanan.btn_registrasi.setEnabled(false);
+                        
                         break;
-                    case 3:
+                    case 3: //jika 3
                         menu_inventory inven = new menu_inventory();
-                        inven.setVisible(true);
-                        this.setVisible(false);
-                        inven.btn_logout.setEnabled(true);
+                        inven.setVisible(true); //menampilkan menu inventory
+                        this.setVisible(false); //menutup menu login
+                        inven.btn_logout.setEnabled(true);//meng enable kan button logout pada menu inventory
                         break;
                 }
             }
-            if (u.username.isEmpty() || u.password.isEmpty()) {
+            if (u.username.isEmpty() || u.password.isEmpty()) { //validasi jika username dan pass kosong maka akan menampilkan
                 JOptionPane.showMessageDialog(null, "Username atau Password tidak boleh kosong!");
                 return;
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage()); //menampilkan pesan eror jika ada kesalahan
         }
     }//GEN-LAST:event_btn_loginActionPerformed
 
