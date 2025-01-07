@@ -22,7 +22,7 @@ import net.sf.jasperreports.view.JasperViewer;
  */
 public class menu_inventory extends javax.swing.JFrame { //kelas utama 
 
-    //membuat variabel 
+    //membuat variabel (private) enkulaption tujuannya pembatas, agar hanya dikelas menu_inventory saja
     private DefaultTableModel model = null; //untuk mode tabel 
     private PreparedStatement stat; //untuk query sql
     private ResultSet rs; //untuk menyimpan hasil query
@@ -33,12 +33,14 @@ public class menu_inventory extends javax.swing.JFrame { //kelas utama
      */
     public menu_inventory() { //konstruktor
         initComponents(); //inisialisasi komponen GUI
+        
+        //Konsep ABSTRAKSI yaitu hanya memanggil fungsi yang ada pada kelas utamanya koneksi
         k.connect(); //memanggil koneksi
         refreshTable(); //memperbarui tampilan tabel
     }
 
     //INHERINTANCE/PEWARISAN
-    //
+    //  kelas inventory mewarisi / subclass dari menu_inventory
     class inventory extends menu_inventory {
 
         //deklarasi atribut

@@ -17,6 +17,9 @@ import javax.swing.JOptionPane;
 public class menu_makanan extends javax.swing.JFrame { //deklarasi kelas menu_makanan debagai turunan dari Jframe
 
     //membuat variabel untuk model tabel, perintah sql dan koneksi database
+    //Encapsulation : penggunaan private untuk membatasi
+    //membatasi akses langsung ke properti atau metode dalam sebuah objek agar tidak dapat diakses secara bebas
+    //menggunakan modifier private sehingga hanya dapat diakses di menu_makanan
     private DefaultTableModel model = null;
     private PreparedStatement stat;
     private ResultSet rs;
@@ -28,18 +31,21 @@ public class menu_makanan extends javax.swing.JFrame { //deklarasi kelas menu_ma
     public menu_makanan() { //konstruktor untuk menu makanan
         initComponents(); //inisialisasi komponen GUI
         //tahap ke 8 menambahkan refreshTabe dan koneksi constructor\
-        k.connect(); //menghubungkan ke database
-        refreshTable(); //
+        
+        //Konsep ABSTRAKSI yaitu hanya memanggil fungsi yang ada pada kelas utamanya koneksi
+        k.connect(); //menghubungkan ke database . memanggil metode
+        refreshTable(); //refres tabel agar kosong
     }
 
     //membuat class makanan
+    //INHERINTACE class makanan mewarisi / sub class menu makanan
     class makanan extends menu_makanan {
-
+    //Kelas makanan adalah subclass dari menu_makanan, sehingga mewarisi semua properti dan metode dari kelas tersebut.
         //deklarasi atribut dari class makanan
         int id_makanan, harga; 
         String nama_makanan, status;
 
-        public makanan() {
+        public makanan() { //konstruktor kelas makanan
             //mengambil nilai dari inputan di GUI
             this.nama_makanan = text_nama_makanan.getText();
             this.harga = Integer.parseInt(text_harga_makanan.getText());
@@ -337,17 +343,18 @@ public class menu_makanan extends javax.swing.JFrame { //deklarasi kelas menu_ma
     private void btn_inputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_inputActionPerformed
         // TODO add your handling code here:
         try {
-            makanan m = new makanan();//memanggil class
+            makanan m = new makanan();//memanggil class. Membuat objek m dari kelas makanan. Objek ini digunakan untuk menyimpan atribut makanan yang akan dimasukkan.
             //mengambil data dr gui ke dalam tabel sql pake syntax sql
-            this.stat = k.getCon().prepareStatement("insert into makanan values (?,?,?,?)"); //query untuk menambahkan data
-            stat.setInt(1, 0); //ID auto increment
+            this.stat = k.getCon().prepareStatement("insert into makanan values (?,?,?,?)"); //query untuk menambahkan data. menggunakan empat kolom yang akan diisi dengan data.
+            stat.setInt(1, 0); //ID auto increment = 0
             stat.setString(2, m.nama_makanan);
             stat.setInt(3, Integer.parseInt(text_harga_makanan.getText())); // Konversi harga
             stat.setString(4, m.status);
             
             int rowsAffected = stat.executeUpdate(); //menjalankan lalu memasukan nilai dr gui ke tabel localhost
+            //cek keberhasilan
             if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(null, "Data berhasil dimasukan.");
+                JOptionPane.showMessageDialog(null, "Data berhasil dimasukan."); //Jika rowsAffected lebih besar dari 0, artinya data berhasil ditambahkan, dan akan menampilkan pesan sukses.
             } else {
                 JOptionPane.showMessageDialog(null, "Data tidak ada.");
             }

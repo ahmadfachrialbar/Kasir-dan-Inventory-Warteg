@@ -40,14 +40,17 @@ public class menu_transaksi extends javax.swing.JFrame {
         initComponents(); //inisialisasi komponen GUI
 
         //tahap ke 8 menambahkan koneksi dan konstruktor
+        
+        //Konsep ABSTRAKSI yaitu hanya memanggil fungsi yang ada pada kelas utamanya koneksi
         k.connect(); //koneksi ke database
         refreshTable(); //memperbarui isi tabel dari database
         refreshcombo(); //memperbatui daftar makanan yang tersedia
     }
+    
     //INHERINTACE / PEWARISAN 
-    //membuat kelas transaksi
+    //membuat kelas transaksi mewarisi menu_transaksi
     class transaksi extends menu_transaksi { //enherintace kelas transaksi mewarisi kelas menu transaksi
-
+    
         //enkapsulasi : atribut dideklarasikan dengan private
         int id_transaksi, id_makanan, harga, jumlah_beli, total_bayar;
         String nama_pelanggan, tanggal, nama_makanan;

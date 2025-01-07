@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 public class menu_registrasi extends javax.swing.JFrame { // Deklarasi kelas menu_registrasi yang merupakan subclass dari javax.swing.JFrame
 
     // Deklarasi variabel model untuk tabel, stat untuk statement SQL, rs untuk hasil query, dan koneksi database
+    //Encapsulation : penggunaan private untuk membatasi
     private DefaultTableModel model = null;
     private PreparedStatement stat;
     private ResultSet rs;
@@ -28,6 +29,8 @@ public class menu_registrasi extends javax.swing.JFrame { // Deklarasi kelas men
         initComponents(); //inisialisasi komponen GUI
 
         //menambahkan Refresh table dan koneksi di constructor GUI
+        
+        //Konsep ABSTRAKSI yaitu hanya memanggil fungsi yang ada pada kelas utamanya koneksi
         k.connect();//supaya GUI connect dengan sql yang ada di localhost
         refreshTable();
         //listener pada tabel untuk menangani event klik mouse
@@ -64,7 +67,7 @@ public class menu_registrasi extends javax.swing.JFrame { // Deklarasi kelas men
         }
     }
 
-//    membuat class refresh table( untuk membuat komponen kolom dan baris di Jtable yang ada pada GUI
+    //membuat class refresh table( untuk membuat komponen kolom dan baris di Jtable yang ada pada GUI
     public void refreshTable() {
         model = new DefaultTableModel(); //membuat objek
         //menambahan kolom ke model tabel
